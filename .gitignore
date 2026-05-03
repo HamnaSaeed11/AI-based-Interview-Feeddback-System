@@ -1,11 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Environments
 myenv/
 venv/
-__pycache__/
-videos/
-model/
-*.mp4
-*.avi
-*.mov
-*.pkl
+
+# Models (VERY IMPORTANT)
+Models/
 *.h5
+*.pkl
 *.pt
+*.dat
+*.json
+
+# OS
+.DS_Store
+Thumbs.db
