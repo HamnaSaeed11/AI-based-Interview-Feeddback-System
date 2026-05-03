@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% block title %}InterviewAI — Master Your Interview Skills{% endblock %}
+
+{% block body %}
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-bg-glow"></div>
+  <div class="hero-bg-glow-2"></div>
+
+  <div class="hero-inner">
+    <!-- Left: copy -->
+    <div class="hero-copy">
+      <div class="hero-tag fade-up">
+        <span class="dot"></span>
+        AI-Powered Interview Coach
+      </div>
+
+      <h1 class="hero-title fade-up" style="animation-delay:150ms;">
+        Ace Your Next<br>
+        <span class="accent">Interview</span><br>
+        With Confidence
+      </h1>
+
+      <p class="hero-subtitle fade-up" style="animation-delay:300ms;">
+        Get real-time feedback on your facial expressions, vocal tone, and written responses. Our deep learning models analyze how you present yourself — so you can improve before it counts.
+      </p>
+
+      <div class="hero-cta fade-up" style="animation-delay:450ms;">
+        <form action="/video" method="post" style="display:inline;">
+          <button type="submit" class="btn btn-accent btn-lg">🎥 Start Video Interview</button>
+        </form>
+        <a href="/rules" class="btn btn-outline btn-lg">Learn How It Works</a>
+      </div>
+
+      <div class="hero-stats fade-up" style="animation-delay:600ms;">
+        <div class="hero-stat-item">
+          <span class="stat-num">2</span>
+          <span class="stat-label">Analysis Modes</span>
+        </div>
+        <div class="hero-stat-item">
+          <span class="stat-num">6+</span>
+          <span class="stat-label">Emotions Tracked</span>
+        </div>
+        <div class="hero-stat-item">
+          <span class="stat-num">Big 5</span>
+          <span class="stat-label">Personality Traits</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: visual card -->
+    <div class="hero-visual fade-up" style="animation-delay:300ms;">
+      <div class="hero-card-stack">
+        <div class="hero-float-card card-b">
+          <div class="float-icon blue">🎤</div>
+          <div>
+            <div class="float-card-label">Voice Analysis</div>
+            <div class="float-card-value">Live Processing</div>
+          </div>
+        </div>
+
+        <div class="hero-main-card">
+          <div class="hero-card-chip">
+            <div class="chip live">Real-time Analysis</div>
+            <div class="chip">Video Mode</div>
+          </div>
+          <div class="hero-card-title">Emotion Detection</div>
+          <div class="emotion-bars">
+            <div class="emotion-bar-row">
+              <span class="label">Confidence</span>
+              <div class="emotion-bar-track">
+                <div class="emotion-bar-fill confidence" style="width:78%"></div>
+              </div>
+              <span class="pct">78%</span>
+            </div>
+            <div class="emotion-bar-row">
+              <span class="label">Calm</span>
+              <div class="emotion-bar-track">
+                <div class="emotion-bar-fill calm" style="width:64%"></div>
+              </div>
+              <span class="pct">64%</span>
+            </div>
+            <div class="emotion-bar-row">
+              <span class="label">Energy</span>
+              <div class="emotion-bar-track">
+                <div class="emotion-bar-fill energy" style="width:85%"></div>
+              </div>
+              <span class="pct">85%</span>
+            </div>
+            <div class="emotion-bar-row">
+              <span class="label">Focus</span>
+              <div class="emotion-bar-track">
+                <div class="emotion-bar-fill focus" style="width:71%"></div>
+              </div>
+              <span class="pct">71%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-float-card card-a">
+          <div class="float-icon green">✅</div>
+          <div>
+            <div class="float-card-label">Analysis Complete</div>
+            <div class="float-card-value">Report Ready</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ INTERVIEW MODES ═══ -->
+<section class="section" id="modes">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Choose Your Mode</span>
+      <h2>Two Ways to Practice</h2>
+      <p>Each mode uses a different AI model to analyze a different dimension of your interview performance.</p>
+    </div>
+
+    <div class="mode-cards" style="grid-template-columns: repeat(2, 1fr);">
+      <!-- Video -->
+      <div class="mode-card reveal">
+        <div class="mode-card-img">
+          <img src="/static/CSS/images/video.png" alt="Video Interview" loading="lazy">
+        </div>
+        <div class="mode-card-body">
+          <h3>🎥 Video Interview</h3>
+          <p>Record yourself answering a real interview question. Our computer vision model tracks your facial micro-expressions and body language frame by frame.</p>
+          <div class="mode-card-traits">
+            <span class="tag">Anger</span>
+            <span class="tag">Happiness</span>
+            <span class="tag">Fear</span>
+            <span class="tag">Sadness</span>
+            <span class="tag">Surprise</span>
+            <span class="tag">Disgust</span>
+          </div>
+          <form action="/video" method="post" style="margin-top:auto;padding-top:var(--space-md);">
+            <input type="submit" name="video" value="Start Video Interview">
+          </form>
+        </div>
+      </div>
+
+      <!-- Audio -->
+      <div class="mode-card reveal">
+        <div class="mode-card-img">
+          <img src="/static/CSS/images/audio.png" alt="Audio Interview" loading="lazy">
+        </div>
+        <div class="mode-card-body">
+          <h3>🎤 Audio Interview</h3>
+          <p>Answer vocally and let our speech emotion recognition model decode what your voice reveals — tone, pacing, and emotional signals recruiters actually pick up on.</p>
+          <div class="mode-card-traits">
+            <span class="tag">Anger</span>
+            <span class="tag">Happiness</span>
+            <span class="tag">Fear</span>
+            <span class="tag">Sadness</span>
+            <span class="tag">Surprise</span>
+            <span class="tag">Disgust</span>
+          </div>
+          <form action="/audio_index" method="post" style="margin-top:auto;padding-top:var(--space-md);">
+            <input type="submit" name="audio_index" value="Start Audio Interview">
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="section section-dark" id="how-it-works">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">The Process</span>
+      <h2>How It Works</h2>
+      <p>From input to actionable insight in four steps. Our pipeline runs entirely on your submission — no manual scoring.</p>
+    </div>
+
+    <div class="process-steps">
+      <div class="step-card reveal">
+        <div class="step-num">1</div>
+        <h4>Choose a Mode</h4>
+        <p>Pick video, audio, or text depending on what aspect of your interview style you want to train.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">2</div>
+        <h4>Submit Your Response</h4>
+        <p>Record live, upload a file, or type directly in the browser. Answer as you would in a real interview.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">3</div>
+        <h4>AI Analysis</h4>
+        <p>Deep learning models process your submission and extract emotional and personality signals automatically.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">4</div>
+        <h4>Get Your Report</h4>
+        <p>Receive a detailed breakdown with benchmarks against other candidates and specific improvement tips.</p>
+      </div>
+    </div>
+
+    <div class="text-center" style="margin-top:var(--space-xl);">
+      <a href="/rules" class="btn btn-outline btn-lg reveal">Full Platform Overview →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS ═══ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-card reveal">
+        <span class="num">3</span>
+        <span class="label">AI Models Running</span>
+      </div>
+      <div class="stat-card reveal">
+        <span class="num">6</span>
+        <span class="label">Emotions Detected</span>
+      </div>
+      <div class="stat-card reveal">
+        <span class="num">100%</span>
+        <span class="label">Automated Scoring</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA BANNER ═══ -->
+<section class="section section-dark">
+  <div class="container text-center">
+    <div class="reveal">
+      <span class="section-tag">Ready?</span>
+      <h2 style="color:#fff; margin-bottom:var(--space-md);">Start Practicing Today</h2>
+      <p style="color:rgba(255,255,255,0.65); max-width:500px; margin:0 auto var(--space-lg);">
+        The best interviewees aren't the most talented — they're the most prepared. Give yourself the edge.
+      </p>
+      <div class="flex-center" style="flex-wrap:wrap;">
+        <form action="/video" method="post" style="display:inline;"><button type="submit" class="btn btn-accent btn-lg">🎥 Video Interview</button></form>
+        <form action="/audio_index" method="post" style="display:inline;"><button type="submit" class="btn btn-outline btn-lg">🎤 Audio Interview</button></form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+/* Hero fade-up on load */
+document.addEventListener('DOMContentLoaded', () => {
+  const els = document.querySelectorAll('.fade-up');
+  els.forEach((el, i) => {
+    setTimeout(() => el.classList.add('in'), 100 + i * 150);
+  });
+});
+</script>
+{% endblock %}

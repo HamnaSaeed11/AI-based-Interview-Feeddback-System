@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="/static/CSS/style.css">
+  <title>{% block title %}Interview Simulator{% endblock %}</title>
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<!-- NAVBAR - always solid dark navy -->
+<nav class="navbar scrolled" id="navbar">
+  <a href="/" class="navbar-brand">
+    <div class="brand-icon">🤖</div>
+    <span>Interview Analyzer</span>
+  </a>
+
+  <div class="navbar-links">
+    <a href="/">Home</a>
+    <a href="/rules">How It Works</a>
+    <form action="/video"       method="post" style="display:inline;"><button type="submit" class="nav-form-btn">Video</button></form>
+    <form action="/audio_index" method="post" style="display:inline;"><button type="submit" class="nav-form-btn">Audio</button></form>
+  </div>
+
+  <div class="navbar-actions">
+    {% if username %}
+    <div class="navbar-user">
+      <i class="fa-solid fa-circle-user"></i>
+      <strong>{{ username }}</strong>
+    </div>
+    <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+    {% else %}
+    <a href="/login"  class="btn btn-outline btn-sm">Sign In</a>
+    <a href="/signup" class="btn btn-primary btn-sm">Get Started</a>
+    {% endif %}
+  </div>
+
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/">Home</a>
+  <a href="/rules">How It Works</a>
+  <form action="/video"       method="post"><button type="submit" class="nav-form-btn mobile-nav-btn">Video Interview</button></form>
+  <form action="/audio_index" method="post"><button type="submit" class="nav-form-btn mobile-nav-btn">Audio Interview</button></form>
+  {% if username %}
+  <div class="navbar-user" style="color:rgba(255,255,255,0.7);">Signed in as <strong style="color:#fff">{{ username }}</strong></div>
+  <a href="/logout" class="btn btn-danger btn-sm" style="align-self:flex-start;">Logout</a>
+  {% else %}
+  <a href="/login">Sign In</a>
+  <a href="/signup" class="btn btn-primary btn-sm" style="align-self:flex-start;">Get Started</a>
+  {% endif %}
+</div>
+
+{% block body %}{% endblock %}
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="navbar-brand" style="color:#fff;">
+        <div class="brand-icon">🤖</div>
+        <span>Interview Analyzer</span>
+      </div>
+      <p class="brand-desc">An advanced AI-powered interview simulator analyzing facial expressions, vocal tone, and written responses.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Platform</h5>
+      <form action="/video"       method="post"><button type="submit" class="nav-form-btn footer-nav-btn">Video Interview</button></form>
+      <form action="/audio_index" method="post"><button type="submit" class="nav-form-btn footer-nav-btn">Audio Interview</button></form>
+    </div>
+    <div class="footer-col">
+      <h5>Account</h5>
+      <a href="/login">Sign In</a>
+      <a href="/signup">Create Account</a>
+    </div>
+    <div class="footer-col">
+      <h5>Resources</h5>
+      <a href="/rules">How It Works</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 InterviewAnalyzer. All rights reserved.</span>
+    <span>Built with Deep Learning + Computer Vision</span>
+  </div>
+</footer>
+
+<script>
+const hamburger  = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+});
+
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

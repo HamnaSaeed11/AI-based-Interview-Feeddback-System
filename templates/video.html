@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Video Interview — InterviewAI{% endblock %}
+
+{% block body %}
+<div class="interview-page">
+  <div class="interview-hero">
+    <div class="interview-hero-inner">
+      <span class="section-tag">Video Mode</span>
+      <h1>🎥 Video Interview</h1>
+      <p>Record yourself answering a live question. Our computer vision model will track your facial expressions throughout the recording.</p>
+    </div>
+  </div>
+
+  <div class="interview-body">
+
+    <div class="question-block reveal">
+      <p>"Record, Analyze, Improve !!"</p>
+    </div>
+
+    <div class="recording-layout reveal">
+      <!-- Record live -->
+      <div>
+        <h3 style="margin-bottom:var(--space-md);">Record Live</h3>
+        <form action="/video_1" method="post">
+          <div class="duration-section">
+            <h3>Recording Duration</h3>
+            <div class="duration-options">
+              <label><input type="radio" name="duration" value="15" checked><span>15 sec</span></label>
+              <label><input type="radio" name="duration" value="30"><span>30 sec</span></label>
+              <label><input type="radio" name="duration" value="45"><span>45 sec</span></label>
+              <label><input type="radio" name="duration" value="60"><span>1 min</span></label>
+              <label><input type="radio" name="duration" value="120"><span>2 min</span></label>
+            </div>
+          </div>
+          <input type="submit" name="video_1" value="Start Recording">
+        </form>
+      </div>
+
+      <!-- Upload -->
+      <div>
+        <h3 style="margin-bottom:var(--space-md);">Or Upload a File</h3>
+        <div class="upload-section">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size:2rem;color:var(--color-accent);margin-bottom:var(--space-sm);"></i>
+          <h3>Upload Pre-recorded Video</h3>
+          <p style="color:var(--color-muted);font-size:0.85rem;margin-bottom:var(--space-sm);">MP4, MOV, AVI, WebM supported</p>
+          <form action="/upload_video" method="post" enctype="multipart/form-data" id="upload-video-form">
+            <input type="file" name="video_file" accept="video/*" required style="margin-bottom:var(--space-sm);">
+            <input type="submit" value="Upload & Analyse Video">
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {# flash messages suppressed on this page #}
+    {% with messages = get_flashed_messages() %}{% endwith %}
+
+    <div style="display:flex; gap:var(--space-sm); margin-top:var(--space-xl);">
+      <button type="button" onclick="history.go(-1)" class="btn btn-ghost">← Back</button>
+      <a href="/rules" class="btn btn-ghost">How does it work?</a>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="upload-overlay" class="loading-overlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <h4>Analysing your video…</h4>
+    <p>This may take a moment. Please don't close this page.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('upload-video-form').addEventListener('submit', function () {
+  document.getElementById('upload-overlay').classList.add('active');
+});
+</script>
+{% endblock %}

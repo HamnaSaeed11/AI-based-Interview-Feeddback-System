@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+{% block title %}How It Works — InterviewAI{% endblock %}
+
+{% block body %}
+
+<div class="interview-page">
+  <div class="interview-hero">
+    <div class="interview-hero-inner">
+      <span class="section-tag">Platform Overview</span>
+      <h1>How Interview Analyzer Works</h1>
+      <p>Everything you need to know about the technology, the process, and what your results actually mean.</p>
+    </div>
+  </div>
+
+  <div style="padding: var(--space-xl) clamp(20px,5vw,60px); max-width:1280px; margin:0 auto;">
+
+    <!-- INTRO -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-xl); align-items:center; margin-bottom:var(--space-2xl);" class="reveal intro-grid">
+      <div>
+        <span class="section-tag">The Problem We Solve</span>
+        <h2 style="margin-bottom:var(--space-md);">Most interview preparation misses the most important part</h2>
+        <p style="color:var(--color-muted); font-size:1.05rem; line-height:1.75; margin-bottom:var(--space-md);">
+          Candidates spend hours rehearsing answers — but they have no idea how they actually come across. Facial expressions, vocal tone, and word choice all shape the impression an interviewer forms, often without either party realising it.
+        </p>
+        <p style="color:var(--color-muted); font-size:1.05rem; line-height:1.75;">
+          Interview Analyzer makes the invisible visible. Record yourself, submit your response, and receive an objective AI-powered breakdown of how you are perceived — not just what you say, but how you say it.
+        </p>
+      </div>
+      <div style="background:var(--color-light-blue); border-radius:var(--radius-xl); padding:var(--space-lg);">
+        <div style="display:flex; align-items:flex-start; gap:14px; margin-bottom:var(--space-md);">
+          <div style="width:44px;height:44px;border-radius:var(--radius-md);background:var(--color-navy);display:grid;place-items:center;font-size:1.2rem;flex-shrink:0;">😰</div>
+          <div>
+            <p style="font-weight:700;color:var(--color-navy);margin-bottom:4px;">Before Interview Analyzer</p>
+            <p style="color:var(--color-muted);font-size:0.88rem;margin:0;">You rehearse answers alone. No idea if you look nervous. No idea if your voice sounds tense. No feedback until the rejection email.</p>
+          </div>
+        </div>
+        <div style="height:1px;background:var(--color-border);margin-bottom:var(--space-md);"></div>
+        <div style="display:flex; align-items:flex-start; gap:14px;">
+          <div style="width:44px;height:44px;border-radius:var(--radius-md);background:var(--color-accent);display:grid;place-items:center;font-size:1.2rem;flex-shrink:0;">🤖</div>
+          <div>
+            <p style="font-weight:700;color:var(--color-navy);margin-bottom:4px;">After Interview Analyzer</p>
+            <p style="color:var(--color-muted);font-size:0.88rem;margin:0;">You know exactly which emotions showed on your face, what your voice revealed, and how you compare — before the real interview.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEPS -->
+    <div class="reveal" style="margin-bottom:var(--space-2xl);">
+      <span class="section-tag">Step by Step</span>
+      <h2 style="margin-bottom:var(--space-lg);">What Happens When You Submit</h2>
+      <div style="display:flex;flex-direction:column;gap:var(--space-md);">
+
+        <div class="step-row">
+          <div class="step-circle" style="background:var(--color-navy);">1</div>
+          <div class="step-content">
+            <h3 style="margin-bottom:6px;">Choose Your Mode</h3>
+            <p style="color:var(--color-muted);margin:0;font-size:0.92rem;line-height:1.65;">Select Video or Audio depending on which dimension of your performance you want to train. Each uses a completely different AI model targeting a different signal.</p>
+          </div>
+        </div>
+
+        <div class="step-row">
+          <div class="step-circle" style="background:var(--color-accent);">2</div>
+          <div class="step-content">
+            <h3 style="margin-bottom:6px;">Record or Upload Your Response</h3>
+            <p style="color:var(--color-muted);margin:0;font-size:0.92rem;line-height:1.65;">Answer a real interview question live through your browser, or upload a file you already have. Answer naturally — as you would in a real interview.</p>
+          </div>
+        </div>
+
+        <div class="step-row">
+          <div class="step-circle" style="background:var(--color-navy);">3</div>
+          <div class="step-content">
+            <h3 style="margin-bottom:6px;">AI Analysis Runs Automatically</h3>
+            <p style="color:var(--color-muted);margin:0;font-size:0.92rem;line-height:1.65;">The moment you submit, our deep learning pipeline processes your input. For video, every frame is passed through a facial emotion classifier. For audio, acoustic features are extracted and classified. No human reviews your submission.</p>
+          </div>
+        </div>
+
+        <div class="step-row">
+          <div class="step-circle" style="background:var(--color-accent);">4</div>
+          <div class="step-content">
+            <h3 style="margin-bottom:6px;">Get Your Results Dashboard</h3>
+            <p style="color:var(--color-muted);margin:0;font-size:0.92rem;line-height:1.65;">Your results page shows a readiness score, emotion breakdown, trend chart, personalised feedback, and a benchmark against other candidates. Every insight is generated specifically from your submission.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TWO MODULES -->
+    <div class="reveal" style="margin-bottom:var(--space-2xl);">
+      <span class="section-tag">Analysis Modules</span>
+      <h2 style="margin-bottom:var(--space-lg);">Two AI Models, Two Dimensions</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);" class="modules-grid">
+
+        <div style="background:var(--color-navy);border-radius:var(--radius-xl);padding:var(--space-lg);color:white;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(33,150,243,0.12);"></div>
+          <div style="font-size:2.2rem;margin-bottom:var(--space-sm);">🎥</div>
+          <h3 style="color:white;margin-bottom:var(--space-sm);">Video Analysis</h3>
+          <p style="color:rgba(255,255,255,0.7);font-size:0.9rem;line-height:1.7;margin-bottom:var(--space-md);">Computer vision tracks your face frame by frame. A convolutional neural network classifies each frame into one of seven emotional states, producing an overall breakdown and a timeline of emotional shifts.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:var(--space-md);">
+            <span class="tag" style="background:rgba(255,255,255,0.12);color:white;">OpenCV</span>
+            <span class="tag" style="background:rgba(255,255,255,0.12);color:white;">dlib</span>
+            <span class="tag" style="background:rgba(255,255,255,0.12);color:white;">CNN</span>
+            <span class="tag" style="background:rgba(255,255,255,0.12);color:white;">D3.js charts</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border-radius:var(--radius-md);padding:10px 16px;">
+            <p style="font-size:0.78rem;color:rgba(255,255,255,0.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Detects</p>
+            <p style="font-size:0.88rem;color:rgba(255,255,255,0.85);margin:0;">Angry · Disgust · Fear · Happy · Sad · Surprise · Neutral</p>
+          </div>
+        </div>
+
+        <div style="background:var(--color-light-blue);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-lg);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(33,150,243,0.08);"></div>
+          <div style="font-size:2.2rem;margin-bottom:var(--space-sm);">🎤</div>
+          <h3 style="color:var(--color-navy);margin-bottom:var(--space-sm);">Audio Analysis</h3>
+          <p style="color:var(--color-muted);font-size:0.9rem;line-height:1.7;margin-bottom:var(--space-md);">Speech emotion recognition extracts acoustic features — MFCC, chroma, spectral contrast — from your voice. A deep learning model classifies the emotional content independently of the words you speak.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:var(--space-md);">
+            <span class="tag">Librosa</span>
+            <span class="tag">MFCC</span>
+            <span class="tag">Deep Learning</span>
+            <span class="tag">Benchmarking</span>
+          </div>
+          <div style="background:white;border-radius:var(--radius-md);padding:10px 16px;border:1px solid var(--color-border);">
+            <p style="font-size:0.78rem;color:var(--color-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Detects</p>
+            <p style="font-size:0.88rem;color:var(--color-navy);margin:0;font-weight:500;">Angry · Disgust · Fear · Happy · Sad · Surprise · Neutral</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RESULTS EXPLAINED -->
+    <div class="reveal" style="background:var(--color-navy);border-radius:var(--radius-xl);padding:var(--space-xl);margin-bottom:var(--space-2xl);position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(33,150,243,0.15) 0%,transparent 70%);"></div>
+      <div style="position:relative;z-index:1;">
+        <span class="section-tag">Reading Your Results</span>
+        <h2 style="color:white;margin-bottom:var(--space-lg);">What Each Part of Your Dashboard Means</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-md);" class="results-grid">
+          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:var(--space-md);">
+            <div style="font-size:1.6rem;margin-bottom:8px;">🎯</div>
+            <h4 style="color:white;margin-bottom:8px;">Readiness Score</h4>
+            <p style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin:0;line-height:1.65;">A single 0–100 score aggregating your emotional profile. Colour-coded based on how interview-ready your expressions appeared.</p>
+          </div>
+          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:var(--space-md);">
+            <div style="font-size:1.6rem;margin-bottom:8px;">📊</div>
+            <h4 style="color:white;margin-bottom:8px;">Emotion Breakdown</h4>
+            <p style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin:0;line-height:1.65;">What percentage of your recording was dominated by each emotion. Identifies which signals are strongest and whether they help or hurt.</p>
+          </div>
+          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:var(--space-md);">
+            <div style="font-size:1.6rem;margin-bottom:8px;">📈</div>
+            <h4 style="color:white;margin-bottom:8px;">Timeline Chart</h4>
+            <p style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin:0;line-height:1.65;">A D3.js chart showing emotion intensity across your recording. Pinpoints exactly when emotional shifts occurred.</p>
+          </div>
+          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:var(--space-md);">
+            <div style="font-size:1.6rem;margin-bottom:8px;">👥</div>
+            <h4 style="color:white;margin-bottom:8px;">Benchmark</h4>
+            <p style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin:0;line-height:1.65;">Your distribution vs the average of all previous candidates. Context that makes your score meaningful.</p>
+          </div>
+          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:var(--space-md);">
+            <div style="font-size:1.6rem;margin-bottom:8px;">💡</div>
+            <h4 style="color:white;margin-bottom:8px;">Personalised Feedback</h4>
+            <p style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin:0;line-height:1.65;">Generated specifically from your numbers — not a generic tips list. Addresses exactly what your results show.</p>
+          </div>
+          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:var(--space-md);">
+            <div style="font-size:1.6rem;margin-bottom:8px;">⬇️</div>
+            <h4 style="color:white;margin-bottom:8px;">Download Report</h4>
+            <p style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin:0;line-height:1.65;">Save your results as a PDF. Track how your scores improve with repeated practice sessions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="reveal" style="margin-bottom:var(--space-2xl);">
+      <span class="section-tag">Common Questions</span>
+      <h2 style="margin-bottom:var(--space-lg);">Frequently Asked Questions</h2>
+      <div style="display:flex;flex-direction:column;gap:var(--space-sm);">
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Does the platform store my video or audio recordings?<span class="faq-icon">+</span></button>
+          <div class="faq-a">Recordings are processed server-side to extract emotion data, then discarded. The platform stores your analysis results — not the raw video or audio file itself.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">How accurate is the emotion detection?<span class="faq-icon">+</span></button>
+          <div class="faq-a">The facial emotion model performs well on benchmark datasets. The audio model was trained on acted speech and may be less precise on natural conversational speech. Treat results as indicative signals for identifying patterns, not as a clinical diagnosis.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Do I need an account to use the platform?<span class="faq-icon">+</span></button>
+          <div class="faq-a">Yes. An account is required to access the Video and Audio analysis tools. This protects the AI endpoints and enables result storage. Creating an account takes under 30 seconds.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">What is the best way to use this platform?<span class="faq-icon">+</span></button>
+          <div class="faq-a">Start with Video. Record a 45-second answer as if you are in a real interview. Review your results, focus on the emotions that scored highest negatively, and record again. Repeat until your readiness score consistently sits above 70. Then do the same with Audio.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">What browser do I need?<span class="faq-icon">+</span></button>
+          <div class="faq-a">Any modern browser — Chrome, Firefox, Edge, or Safari 14+. The live recording feature requires you to grant permission to access your camera and microphone. No extensions or plugins are needed.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="reveal" style="background:var(--color-light-blue);border-radius:var(--radius-xl);padding:var(--space-xl);text-align:center;margin-bottom:var(--space-lg);">
+      <h2 style="margin-bottom:var(--space-sm);">Ready to Find Out How You Come Across?</h2>
+      <p style="color:var(--color-muted);max-width:480px;margin:0 auto var(--space-lg);">The best preparation is honest feedback. Start a session now — it takes less than two minutes.</p>
+      <div style="display:flex;gap:var(--space-sm);justify-content:center;flex-wrap:wrap;">
+        <form action="/video" method="post" style="display:inline;">
+          <button type="submit" class="btn btn-primary btn-lg">🎥 Start Video Interview</button>
+        </form>
+        <form action="/audio_index" method="post" style="display:inline;">
+          <button type="submit" class="btn btn-ghost btn-lg">🎤 Start Audio Interview</button>
+        </form>
+      </div>
+    </div>
+
+    <div style="margin-bottom:var(--space-xl);">
+      <button type="button" onclick="history.go(-1)" class="btn btn-ghost">← Go Back</button>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleFaq(btn) {
+  var answer = btn.nextElementSibling;
+  var icon   = btn.querySelector('.faq-icon');
+  var isOpen = answer.style.display === 'block';
+  document.querySelectorAll('.faq-a').forEach(function(a){ a.style.display='none'; });
+  document.querySelectorAll('.faq-icon').forEach(function(i){ i.textContent='+'; });
+  if (!isOpen) { answer.style.display='block'; icon.textContent='×'; }
+}
+</script>
+{% endblock %}

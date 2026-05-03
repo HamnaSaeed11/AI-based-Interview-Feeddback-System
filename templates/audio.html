@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block title %}Audio Interview — InterviewAI{% endblock %}
+
+{% block body %}
+<div class="interview-page">
+  <div class="interview-hero">
+    <div class="interview-hero-inner">
+      <span class="section-tag">Audio Mode</span>
+      <h1>🎤 Audio Interview</h1>
+      <p>Record your spoken response. Our speech emotion recognition model will analyze your vocal tone, pacing, and emotional signals.</p>
+    </div>
+  </div>
+
+  <div class="interview-body">
+
+    <div class="question-block reveal">
+      <p>"Record, Analyze, Improve !!"</p>
+    </div>
+
+    <div class="recording-layout reveal">
+      <!-- Left: Record -->
+      <div>
+        <h3 style="margin-bottom:var(--space-md);">Record Live</h3>
+
+        <form id="record-form">
+          <div class="duration-section">
+            <h3>Recording Duration</h3>
+            <div class="duration-options">
+              <label><input type="radio" name="duration" value="15" checked><span>15 sec</span></label>
+              <label><input type="radio" name="duration" value="30"><span>30 sec</span></label>
+              <label><input type="radio" name="duration" value="45"><span>45 sec</span></label>
+              <label><input type="radio" name="duration" value="60"><span>1 min</span></label>
+              <label><input type="radio" name="duration" value="120"><span>2 min</span></label>
+            </div>
+          </div>
+          <button type="button" id="start-record-btn" class="btn btn-primary btn-lg">
+            <i class="fa-solid fa-microphone"></i> Start Recording
+          </button>
+        </form>
+
+        <!-- Live Recording UI -->
+        <div id="recording-ui" style="display:none; flex-direction:column; gap:14px; margin-top:var(--space-md);">
+          <div class="recording-label">
+            <span class="rec-dot"></span> Recording in Progress
+          </div>
+          <p style="color:var(--color-muted); font-size:0.9rem;">Time remaining: <strong id="countdown-seconds">15</strong>s</p>
+          <div class="countdown-bar-container">
+            <div class="countdown-bar-fill" id="countdown-bar"></div>
+          </div>
+          <canvas id="audio-visualiser" width="400" height="70"
+            style="border-radius:var(--radius-md); background:#0D2B45; display:none;"></canvas>
+        </div>
+
+        <form id="hidden-audio-form" action="/upload_audio" method="post"
+              enctype="multipart/form-data" style="display:none;">
+          <input type="file" name="audio_file" id="audio-blob-input">
+        </form>
+      </div>
+
+      <!-- Right: Upload -->
+      <div>
+        <h3 style="margin-bottom:var(--space-md);">Or Upload a File</h3>
+        <div class="upload-section">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size:2rem;color:var(--color-accent);margin-bottom:var(--space-sm);"></i>
+          <h3>Upload Pre-recorded Audio</h3>
+          <p style="color:var(--color-muted);font-size:0.85rem;margin-bottom:var(--space-sm);">MP3, WAV, M4A, OGG supported</p>
+          <form action="/upload_audio" method="post" enctype="multipart/form-data" id="upload-audio-form">
+            <input type="file" name="audio_file" accept="audio/*" required style="margin-bottom:var(--space-sm);">
+            <input type="submit" value="Upload & Analyse Audio">
+          </form>
+        </div>
+      </div>
+    </div>
+
+{# flash messages suppressed on audio page #}
+    {% with messages = get_flashed_messages() %}{% endwith %}
+
+    <div style="display:flex; gap:var(--space-sm); margin-top:var(--space-xl);">
+      <button type="button" onclick="history.go(-1)" class="btn btn-ghost">← Back</button>
+      <a href="/rules" class="btn btn-ghost">How does it work?</a>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="upload-overlay" class="loading-overlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <h4>Analysing your audio…</h4>
+    <p>This may take a moment. Please don't close this page.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('upload-audio-form').addEventListener('submit', function () {
+  document.getElementById('upload-overlay').classList.add('active');
+});
+
+var mediaRecorder = null, audioChunks = [], timerHandle = null;
+var remaining = 15, totalDuration = 15, audioCtx = null, animFrame = null;
+
+var startBtn   = document.getElementById('start-record-btn');
+var recUI      = document.getElementById('recording-ui');
+var secEl      = document.getElementById('countdown-seconds');
+var barEl      = document.getElementById('countdown-bar');
+var canvas     = document.getElementById('audio-visualiser');
+var canvasCtx  = canvas.getContext('2d');
+
+startBtn.addEventListener('click', function () {
+  var radios = document.querySelectorAll('input[name="duration"]');
+  for (var i = 0; i < radios.length; i++) {
+    if (radios[i].checked) { totalDuration = parseInt(radios[i].value, 10); break; }
+  }
+  remaining = totalDuration;
+  secEl.textContent = remaining;
+  barEl.style.width = '100%';
+  barEl.style.background = 'linear-gradient(90deg, var(--color-accent), var(--color-navy))';
+
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(function (stream) {
+      document.getElementById('record-form').style.display = 'none';
+      recUI.style.display = 'flex';
+      canvas.style.display = 'block';
+
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      var source   = audioCtx.createMediaStreamSource(stream);
+      var analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      source.connect(analyser);
+      var bufferLength = analyser.frequencyBinCount;
+      var dataArray    = new Uint8Array(bufferLength);
+
+      function draw() {
+        animFrame = requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
+        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+        canvasCtx.fillStyle = '#0D2B45';
+        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+        var bw = (canvas.width / bufferLength) * 2.5, x = 0;
+        for (var i = 0; i < bufferLength; i++) {
+          var bh = (dataArray[i] / 255) * canvas.height;
+          canvasCtx.fillStyle = 'rgba(33,150,243,' + (0.4 + bh / canvas.height * 0.6) + ')';
+          canvasCtx.fillRect(x, canvas.height - bh, bw, bh);
+          x += bw + 1;
+        }
+      }
+      draw();
+
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks   = [];
+      mediaRecorder.ondataavailable = function (e) { if (e.data.size > 0) audioChunks.push(e.data); };
+      mediaRecorder.onstop = function () {
+        cancelAnimationFrame(animFrame);
+        if (audioCtx) { audioCtx.close(); audioCtx = null; }
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        var blob = new Blob(audioChunks, { type: 'audio/wav' });
+        var file = new File([blob], 'voice_recording.wav', { type: 'audio/wav' });
+        var dt   = new DataTransfer(); dt.items.add(file);
+        document.getElementById('audio-blob-input').files = dt.files;
+        document.getElementById('upload-overlay').classList.add('active');
+        document.getElementById('hidden-audio-form').submit();
+      };
+
+      mediaRecorder.start();
+      timerHandle = setInterval(function () {
+        remaining -= 1;
+        secEl.textContent = remaining;
+        var pct = (remaining / totalDuration) * 100;
+        barEl.style.width = pct + '%';
+        if (remaining <= 0) { clearInterval(timerHandle); mediaRecorder.stop(); }
+      }, 1000);
+    })
+    .catch(function (err) {
+      alert('Could not access microphone: ' + err.message + '\nPlease allow microphone access or use the upload option.');
+      document.getElementById('record-form').style.display = 'block';
+    });
+});
+</script>
+{% endblock %}

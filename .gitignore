@@ -1,0 +1,11 @@
+myenv/
+venv/
+__pycache__/
+videos/
+model/
+*.mp4
+*.avi
+*.mov
+*.pkl
+*.h5
+*.pt

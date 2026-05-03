@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Sign In — InterviewAI{% endblock %}
+
+{% block body %}
+<div class="form-page">
+  <div class="auth-card reveal">
+    <h2>Welcome Back</h2>
+    <p class="text-muted text-center" style="margin-bottom:var(--space-lg);">Sign in to access your interview dashboard</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="flash {{ 'flash-ok' if cat == 'success' else 'flash-error' }}">
+          <i class="fa-solid {{ 'fa-circle-check' if cat == 'success' else 'fa-circle-exclamation' }}"></i>
+          {{ msg }}
+        </div>
+      {% endfor %}
+    {% endwith %}
+
+    <form action="/login" method="post">
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username" required autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+          <button type="button" class="password-toggle" aria-label="Show password">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full" style="margin-top:var(--space-sm);">Sign In</button>
+    </form>
+
+    <div class="auth-divider mt-md">Don't have an account?</div>
+    <a class="auth-link" href="/signup">Create an account →</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.password-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const input = btn.parentElement.querySelector('input');
+    const icon  = btn.querySelector('i');
+    const show  = input.type === 'password';
+    input.type  = show ? 'text' : 'password';
+    icon.classList.toggle('fa-eye',       !show);
+    icon.classList.toggle('fa-eye-slash',  show);
+    btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+Flask
+gunicorn
+Werkzeug
+numpy
+pandas
+scipy
+scikit-learn
+altair
+
+# ML / Deep Learning
+tensorflow
+keras
+dill
+gensim
+seaborn
+
+# NLP
+nltk
+wordcloud
+
+# CV / Video
+opencv-python
+dlib
+imutils
+cmake
+
+# Audio
+wave
+
+# File extraction (text module)
+pypdf              # PDF text extraction — no Java required (primary)
+tika               # fallback PDF extraction (requires Java)
+python-docx        # DOCX / DOC text extraction
+
+# Web / utils
+requests
+argparse

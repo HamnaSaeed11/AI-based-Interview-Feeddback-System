@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Recording — InterviewAI{% endblock %}
+
+{% block body %}
+<div class="interview-page">
+  <div class="interview-hero">
+    <div class="interview-hero-inner">
+      <span class="section-tag">Video Mode</span>
+      <h1>🎥 Recording in Progress</h1>
+      <p>Stay composed, look into the camera, and answer naturally.</p>
+    </div>
+  </div>
+
+  <div class="interview-body" style="display:flex; flex-direction:column; align-items:center; gap:var(--space-lg);">
+
+    <!-- Spinner shown while webcam initialises -->
+    <div id="loading-box" style="text-align:center;">
+      <div class="spinner" style="margin:0 auto var(--space-md);"></div>
+      <p style="color:var(--color-muted);">Starting webcam, please wait…</p>
+    </div>
+
+    <!-- Countdown + recording label (hidden until first frame) -->
+    <div id="countdown-area" style="display:none; flex-direction:column; align-items:center; gap:var(--space-sm); width:100%; max-width:680px;">
+      <div class="recording-label">
+        <span class="rec-dot"></span> REC — Recording in progress
+      </div>
+      <p style="color:var(--color-muted); font-size:0.9rem;">Time remaining: <strong id="countdown-seconds">{{ duration }}</strong>s</p>
+      <div class="countdown-bar-container" style="width:100%;">
+        <div class="countdown-bar-fill" id="countdown-bar"></div>
+      </div>
+    </div>
+
+    <!-- Live webcam stream -->
+    <img id="video-feed" src="/video_stream" alt="Live video feed"
+         style="display:none; width:100%; max-width:680px; border-radius:var(--radius-lg); border:3px solid var(--color-error); box-shadow:var(--shadow-xl);">
+
+    <!-- Redirect message shown when done -->
+    <p id="redirect-msg" style="display:none; color:var(--color-muted); font-size:1.05rem; text-align:center;">
+      ⏳ Recording complete! Redirecting to your results…
+    </p>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var TOTAL    = {{ duration }};
+var REDIRECT = '/video_dash';
+var remaining = TOTAL, countdownStarted = false, timerHandle = null;
+
+var loadingBox  = document.getElementById('loading-box');
+var countArea   = document.getElementById('countdown-area');
+var secEl       = document.getElementById('countdown-seconds');
+var barEl       = document.getElementById('countdown-bar');
+var msgEl       = document.getElementById('redirect-msg');
+var imgEl       = document.getElementById('video-feed');
+
+function finishRecording() {
+  imgEl.src = '';
+  msgEl.style.display = 'block';
+  countArea.style.display = 'none';
+  setTimeout(function () { window.location.href = REDIRECT; }, 1500);
+}
+
+function tick() {
+  remaining -= 1;
+  secEl.textContent = remaining;
+  var pct = (remaining / TOTAL) * 100;
+  barEl.style.width = pct + '%';
+  if (remaining <= 0) { finishRecording(); } else { timerHandle = setTimeout(tick, 1000); }
+}
+
+function startCountdown() {
+  if (countdownStarted) return;
+  countdownStarted = true;
+  loadingBox.style.display = 'none';
+  imgEl.style.display      = 'block';
+  countArea.style.display  = 'flex';
+  timerHandle = setTimeout(tick, 1000);
+}
+
+imgEl.addEventListener('load', startCountdown);
+setTimeout(function () { if (!countdownStarted) startCountdown(); }, 30000);
+</script>
+{% endblock %}

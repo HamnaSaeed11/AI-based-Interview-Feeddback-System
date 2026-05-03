@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Text Interview — InterviewAI{% endblock %}
+
+{% block body %}
+<div class="interview-page">
+  <div class="interview-hero">
+    <div class="interview-hero-inner">
+      <span class="section-tag">Text Mode</span>
+      <h1>✍️ Text Interview</h1>
+      <p>Type your response or upload a document. Our NLP model will score your Big Five personality traits from your writing.</p>
+    </div>
+  </div>
+
+  <div class="interview-body">
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="alert {{ 'alert-error' if 'error' in msg.lower() or 'failed' in msg.lower() else 'alert-info' }}" style="margin-bottom:var(--space-md);">
+            {{ msg }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="question-block reveal">
+      <p>"Tell us about the last time you showed leadership."</p>
+    </div>
+
+    <div class="text-layout reveal">
+      <!-- Type response -->
+      <div>
+        <h3 style="margin-bottom:var(--space-md);">Type Your Response</h3>
+        <form action="/text_1" method="post">
+          <div class="field">
+            <textarea cols="70" rows="16" name="text" placeholder="Write your answer here — aim for a few paragraphs to get the most accurate personality analysis…"></textarea>
+          </div>
+          <input type="submit" value="Start Analysis">
+        </form>
+      </div>
+
+      <!-- Upload document -->
+      <div>
+        <h3 style="margin-bottom:var(--space-md);">Or Upload a Document</h3>
+        <div class="upload-section">
+          <i class="fa-solid fa-file-lines" style="font-size:2rem;color:var(--color-accent);margin-bottom:var(--space-sm);"></i>
+          <h3>Upload Cover Letter / Document</h3>
+          <p style="color:var(--color-muted);font-size:0.82rem;margin-bottom:var(--space-sm);">PDF, DOCX, DOC, TXT — text is extracted automatically</p>
+          <form action="/text_pdf" method="post" enctype="multipart/form-data">
+            <input type="file" name="file"
+                   accept=".pdf,.docx,.doc,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,text/plain"
+                   style="margin-bottom:var(--space-sm);">
+            <input type="submit" value="Upload & Analyse">
+          </form>
+        </div>
+
+        <div style="margin-top:var(--space-lg); background:var(--color-light-blue); border-radius:var(--radius-md); padding:var(--space-md);">
+          <h4 style="margin-bottom:var(--space-sm);">Big Five Traits Measured</h4>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="legend-item"><span class="tag">Openness</span><span style="font-size:0.82rem;color:var(--color-muted);margin-left:8px;">Curiosity & creativity</span></div>
+            <div class="legend-item"><span class="tag">Conscientiousness</span><span style="font-size:0.82rem;color:var(--color-muted);margin-left:8px;">Organization & dependability</span></div>
+            <div class="legend-item"><span class="tag">Extraversion</span><span style="font-size:0.82rem;color:var(--color-muted);margin-left:8px;">Sociability & assertiveness</span></div>
+            <div class="legend-item"><span class="tag">Agreeableness</span><span style="font-size:0.82rem;color:var(--color-muted);margin-left:8px;">Cooperation & empathy</span></div>
+            <div class="legend-item"><span class="tag">Neuroticism</span><span style="font-size:0.82rem;color:var(--color-muted);margin-left:8px;">Emotional stability</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:var(--space-sm); margin-top:var(--space-xl);">
+      <button type="button" onclick="history.go(-1)" class="btn btn-ghost">← Back</button>
+      <a href="/rules" class="btn btn-ghost">How does it work?</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

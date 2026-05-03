@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+{% block title %}Video Results — InterviewAI{% endblock %}
+
+{% block head %}
+<script type="text/javascript" src="/static/js/d3/d3.js"></script>
+<script src="//d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+<style>
+  /* Dashboard-specific overrides */
+  .dash-wrapper { max-width: 960px; margin: 0 auto; padding: 0 clamp(16px,4vw,32px) var(--space-2xl); }
+
+  .score-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    padding: clamp(24px,4vw,40px);
+    margin-bottom: var(--space-md);
+    text-align: center;
+  }
+  .score-ring-wrap { display:flex; align-items:center; justify-content:center; gap:36px; flex-wrap:wrap; }
+  .score-circle {
+    width: 130px; height: 130px; border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 8px solid; flex-shrink: 0;
+  }
+  .score-number { font-family:var(--font-heading); font-size: 2.4rem; font-weight: 800; line-height: 1; }
+  .score-label-text { font-size: 0.85rem; font-weight: 700; margin-top: 4px; }
+  .score-desc { max-width: 480px; text-align: left; }
+  .readiness-bar-bg { background: var(--color-border); border-radius: 100px; height: 12px; overflow: hidden; margin-top:12px; }
+  .readiness-bar-fill { height:100%; border-radius: 100px; transition: width 1.2s ease; }
+  .readiness-labels { display:flex; justify-content:space-between; font-size:0.72rem; color:var(--color-muted); margin-top:4px; }
+
+  .dash-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    padding: clamp(20px,3vw,32px);
+    margin-bottom: var(--space-md);
+  }
+  .dash-card h2 {
+    font-size: 1.1rem; color: var(--color-navy); margin-bottom: var(--space-md);
+    border-left: 4px solid var(--color-accent); padding-left: 14px;
+  }
+  .dominant-badge {
+    display: inline-block; padding: 7px 20px; border-radius: 100px;
+    background: var(--color-accent); color: var(--color-white);
+    font-family: var(--font-heading); font-weight: 700; font-size: 1rem; margin-bottom:14px;
+  }
+
+  .emo-row { display:flex; align-items:center; margin-bottom:10px; gap:10px; }
+  .emo-name { width:82px; text-align:right; font-size:0.85rem; color:var(--color-muted); flex-shrink:0; }
+  .emo-bar-bg { flex:1; background:var(--color-light-blue); border-radius:100px; height:16px; overflow:hidden; }
+  .emo-bar-fill { height:100%; border-radius:100px; min-width:2px; }
+  .emo-pct { width:40px; font-size:0.82rem; color:var(--color-muted); flex-shrink:0; font-weight:600; }
+
+  .feedback-grid { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-sm); }
+  @media(max-width:600px){ .feedback-grid{grid-template-columns:1fr;} .score-ring-wrap{flex-direction:column;} }
+  .feedback-pill { border-radius:var(--radius-md); padding:14px 16px; font-size:0.88rem; line-height:1.55; }
+  .pill-good { background:#e8f5e9; border-left:4px solid #43a047; color:#1b5e20; }
+  .pill-warn { background:#fff8e1; border-left:4px solid #ffc107; color:#6d4c00; }
+  .pill-tip  { background:var(--color-light-blue); border-left:4px solid var(--color-accent); color:var(--color-navy); }
+
+  .chart-frame { width:100%; height:460px; border:none; border-radius:var(--radius-md); overflow:hidden; background:var(--color-light-blue); }
+  .chart-legend { display:flex; flex-wrap:wrap; gap:10px; margin-top:var(--space-sm); justify-content:center; }
+  .legend-dot-sq { display:inline-block; width:12px; height:12px; border-radius:3px; vertical-align:middle; margin-right:4px; }
+
+  .download-btn { background:var(--color-accent); color:#fff; border:none; border-radius:var(--radius-md); padding:11px 24px; font-size:0.9rem; font-weight:700; cursor:pointer; margin-left:12px; transition:background var(--transition-fast); }
+  .download-btn:hover { background:var(--color-accent-dark); }
+
+  .print-header { display:none; text-align:center; margin-bottom:24px; padding-bottom:14px; border-bottom:2px solid var(--color-accent); }
+  .print-header h1 { font-size:1.4rem; color:var(--color-navy); margin:0 0 4px; }
+  .print-header p  { font-size:0.85rem; color:var(--color-muted); margin:0; }
+  @media print {
+    body { background:#fff!important; }
+    .navbar, .footer, .download-btn { display:none!important; }
+    .print-header { display:block!important; }
+    .dash-card, .score-card { box-shadow:none!important; border:1px solid #ddd; page-break-inside:avoid; }
+    .chart-frame { height:300px!important; }
+    .emo-bar-fill, .readiness-bar-fill { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="interview-page">
+  <div class="interview-hero">
+    <div class="interview-hero-inner">
+      <span class="section-tag">Your Results</span>
+      <h1>🎥 Video Interview Analysis</h1>
+      <p>Here's a detailed breakdown of how you performed during your recorded session.</p>
+    </div>
+  </div>
+
+  <div class="interview-body">
+    <div class="dash-wrapper">
+
+      <div class="print-header">
+        <h1>Video Interview Results — InterviewAI</h1>
+        <p id="print-meta"></p>
+      </div>
+
+      {% block body_inner %}
+
+      <!-- ── Score ── -->
+      <div class="score-card reveal">
+        <h2 style="font-family:var(--font-heading); font-size:1.1rem; color:var(--color-muted); margin-bottom:var(--space-md); border:none; padding:0;">🎯 Interview Readiness Score</h2>
+        <div class="score-ring-wrap">
+          <div class="score-circle" style="border-color:{{ score_color }}; color:{{ score_color }};">
+            <span class="score-number">{{ score }}</span>
+            <span class="score-label-text">/ 100</span>
+          </div>
+          <div class="score-desc">
+            <p>
+              {% if score >= 75 %}
+                <strong style="color:{{ score_color }}">{{ score_label }} — Outstanding!</strong><br>
+                You showed genuine positivity, composure, and strong emotional control. Very few candidates reach this range — you are well-positioned to impress.
+              {% elif score >= 55 %}
+                <strong style="color:{{ score_color }}">{{ score_label }} — Solid effort.</strong><br>
+                Some positive signals, but room to improve. Focus on showing more natural warmth and reducing visible anxiety.
+              {% elif score >= 38 %}
+                <strong style="color:{{ score_color }}">{{ score_label }} — More practice needed.</strong><br>
+                Expressions suggest nervousness or tension. This is fixable — record yourself more, do mock interviews, and focus on staying relaxed.
+              {% else %}
+                <strong style="color:{{ score_color }}">{{ score_label }} — Significant improvement needed.</strong><br>
+                Very little positive emotion was detected. Consistent practice and preparation will make a real difference.
+              {% endif %}
+            </p>
+            <div>
+              <div class="readiness-bar-bg">
+                <div class="readiness-bar-fill" id="score-bar" style="width:0%; background:{{ score_color }};"></div>
+              </div>
+              <div class="readiness-labels">
+                <span>Needs Work</span><span>Average</span><span>Good</span><span>Excellent</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Emotion Breakdown ── -->
+      <div class="dash-card reveal">
+        <h2>😊 Facial Emotion Breakdown</h2>
+        <div style="margin-bottom:var(--space-md);">
+          <span style="font-size:0.85rem; color:var(--color-muted);">Dominant emotion detected:</span><br>
+          <span class="dominant-badge">{{ emo }}</span>
+        </div>
+        <div class="emo-bars">
+          <div class="emo-row"><span class="emo-name">Happy</span><div class="emo-bar-bg"><div class="emo-bar-fill" style="width:{{ prob[3] }}%; background:#43a047;"></div></div><span class="emo-pct">{{ prob[3] }}%</span></div>
+          <div class="emo-row"><span class="emo-name">Neutral</span><div class="emo-bar-bg"><div class="emo-bar-fill" style="width:{{ prob[6] }}%; background:#78909c;"></div></div><span class="emo-pct">{{ prob[6] }}%</span></div>
+          <div class="emo-row"><span class="emo-name">Surprise</span><div class="emo-bar-bg"><div class="emo-bar-fill" style="width:{{ prob[5] }}%; background:#ab47bc;"></div></div><span class="emo-pct">{{ prob[5] }}%</span></div>
+          <div class="emo-row"><span class="emo-name">Fear</span><div class="emo-bar-bg"><div class="emo-bar-fill" style="width:{{ prob[2] }}%; background:#ff9800;"></div></div><span class="emo-pct">{{ prob[2] }}%</span></div>
+          <div class="emo-row"><span class="emo-name">Sad</span><div class="emo-bar-bg"><div class="emo-bar-fill" style="width:{{ prob[4] }}%; background:#5c6bc0;"></div></div><span class="emo-pct">{{ prob[4] }}%</span></div>
+          <div class="emo-row"><span class="emo-name">Angry</span><div class="emo-bar-bg"><div class="emo-bar-fill" style="width:{{ prob[0] }}%; background:#e53935;"></div></div><span class="emo-pct">{{ prob[0] }}%</span></div>
+          <div class="emo-row"><span class="emo-name">Disgust</span><div class="emo-bar-bg"><div class="emo-bar-fill" style="width:{{ prob[1] }}%; background:#8d6e63;"></div></div><span class="emo-pct">{{ prob[1] }}%</span></div>
+        </div>
+      </div>
+
+      <!-- ── Feedback ── -->
+      <div class="dash-card reveal">
+        <h2>💡 Personalised Feedback</h2>
+        <div class="feedback-grid">
+          {% if prob[3] > 30 %}
+            <div class="feedback-pill pill-good">✅ <strong>Strong positive energy.</strong> Your happiness level ({{ prob[3] }}%) signals confidence and approachability — exactly what interviewers look for.</div>
+          {% else %}
+            <div class="feedback-pill pill-warn">😐 <strong>Show more warmth.</strong> Happiness was only {{ prob[3] }}%. Try to smile more naturally — it creates a strong first impression.</div>
+          {% endif %}
+
+          {% if prob[6] > 50 %}
+            <div class="feedback-pill pill-warn">😑 <strong>Too neutral.</strong> {{ prob[6] }}% blank expression. Vary your expressions to appear more engaged and interested.</div>
+          {% else %}
+            <div class="feedback-pill pill-good">👍 <strong>Good expressiveness.</strong> You avoided being flat — your face stayed naturally engaged throughout.</div>
+          {% endif %}
+
+          {% if prob[2] > 20 %}
+            <div class="feedback-pill pill-warn">😰 <strong>Anxiety detected.</strong> Fear visible {{ prob[2] }}% of the time. Deep preparation and mock interviews will reduce this significantly.</div>
+          {% else %}
+            <div class="feedback-pill pill-good">😌 <strong>Calm composure.</strong> Low fear ({{ prob[2] }}%) — you appeared relaxed and in control throughout.</div>
+          {% endif %}
+
+          {% if prob[0] > 15 %}
+            <div class="feedback-pill pill-warn">😤 <strong>Watch your tone.</strong> Anger visible {{ prob[0] }}% — stay patient and composed to put interviewers at ease.</div>
+          {% else %}
+            <div class="feedback-pill pill-good">😊 <strong>Professional composure.</strong> Very low anger ({{ prob[0] }}%) — you came across calm and professional.</div>
+          {% endif %}
+
+          <div class="feedback-pill pill-tip">💬 <strong>Eye contact:</strong> Keep your gaze on the camera lens, not the screen — this simulates real eye contact.</div>
+          <div class="feedback-pill pill-tip">🗣️ <strong>Pace:</strong> Speak clearly at moderate pace. Brief pauses before answering signal thoughtfulness.</div>
+          <div class="feedback-pill pill-tip">💡 <strong>Prepare:</strong> Research the company, rehearse stories using STAR method, do at least 3 mock interviews.</div>
+          <div class="feedback-pill pill-tip">🪑 <strong>Body language:</strong> Sit upright, shoulders relaxed. Avoid crossing arms — posture signals confidence.</div>
+        </div>
+      </div>
+
+      <!-- ── Chart ── -->
+      <div class="dash-card reveal">
+        <h2>📈 Emotion Trends Over Time</h2>
+        <p style="font-size:0.85rem; color:var(--color-muted); margin-bottom:var(--space-sm);">Frame-by-frame emotion changes during your recording.</p>
+        <iframe class="chart-frame" src="static/CSS/chart.html"></iframe>
+        <div class="chart-legend">
+          <span style="font-size:0.82rem;"><span class="legend-dot-sq" style="background:orange;"></span>Angry</span>
+          <span style="font-size:0.82rem;"><span class="legend-dot-sq" style="background:red;"></span>Disgust</span>
+          <span style="font-size:0.82rem;"><span class="legend-dot-sq" style="background:green;"></span>Fear</span>
+          <span style="font-size:0.82rem;"><span class="legend-dot-sq" style="background:blue;"></span>Happy</span>
+          <span style="font-size:0.82rem;"><span class="legend-dot-sq" style="background:#222;"></span>Sad</span>
+          <span style="font-size:0.82rem;"><span class="legend-dot-sq" style="background:pink;"></span>Surprise</span>
+          <span style="font-size:0.82rem;"><span class="legend-dot-sq" style="background:brown;"></span>Neutral</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:var(--space-sm); align-items:center; margin-top:var(--space-md);">
+        <button type="button" onclick="history.go(-1)" class="btn btn-ghost">← Back</button>
+        <button class="download-btn" onclick="downloadResult()">⬇ Download Result</button>
+      </div>
+
+      {% endblock %}
+
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="static/js/hist_vid_perso.js"></script>
+<script type="text/javascript" src="static/js/hist_vid_glob.js"></script>
+{% endblock %}
+
+{% block scripts %}
+<script>
+window.addEventListener('load', function () {
+  var bar = document.getElementById('score-bar');
+  if (bar) setTimeout(function () { bar.style.width = '{{ score }}%'; }, 300);
+});
+function downloadResult() {
+  var meta = document.getElementById('print-meta');
+  if (meta) { var n=new Date(); meta.textContent='Generated: '+n.toLocaleDateString()+' '+n.toLocaleTimeString(); }
+  window.print();
+}
+</script>
+{% endblock %}
